@@ -2,9 +2,12 @@ public class DynamicArray {
     private int[] elements;
     private int size;
 
+    private long accesses;
+    private long comparisons;
+    private long movements;
+
     public DynamicArray() {
         elements = new int[10];
-        size = 0;
     }
 
     public void add(int value) {
@@ -22,6 +25,7 @@ public class DynamicArray {
 
         for (int i = size; i > index; i--) {
             elements[i] = elements[i - 1];
+            movements++;
         }
 
         elements[index] = value;
@@ -32,9 +36,11 @@ public class DynamicArray {
         checkIndex(index);
 
         int removed = elements[index];
+        accesses++;
 
         for (int i = index; i < size - 1; i++) {
             elements[i] = elements[i + 1];
+            movements++;
         }
 
         size--;
@@ -43,11 +49,15 @@ public class DynamicArray {
 
     public int get(int index) {
         checkIndex(index);
+        accesses++;
         return elements[index];
     }
 
     public boolean contains(int value) {
         for (int i = 0; i < size; i++) {
+            accesses++;
+            comparisons++;
+
             if (elements[i] == value) {
                 return true;
             }
@@ -59,6 +69,24 @@ public class DynamicArray {
         return size;
     }
 
+    public long getAccesses() {
+        return accesses;
+    }
+
+    public long getComparisons() {
+        return comparisons;
+    }
+
+    public long getMovements() {
+        return movements;
+    }
+
+    public void resetMetrics() {
+        accesses = 0;
+        comparisons = 0;
+        movements = 0;
+    }
+
     private void ensureCapacity() {
         if (size < elements.length) {
             return;
@@ -68,6 +96,7 @@ public class DynamicArray {
 
         for (int i = 0; i < size; i++) {
             bigger[i] = elements[i];
+            movements++;
         }
 
         elements = bigger;

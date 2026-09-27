@@ -2,6 +2,10 @@ public class LinkedList {
     private Node head;
     private int size;
 
+    private long accesses;
+    private long comparisons;
+    private long movements;
+
     private static class Node {
         int value;
         Node next;
@@ -40,10 +44,12 @@ public class LinkedList {
         int removed;
 
         if (index == 0) {
+            accesses++;
             removed = head.value;
             head = head.next;
         } else {
             Node previous = nodeAt(index - 1);
+            accesses++;
             removed = previous.next.value;
             previous.next = previous.next.next;
         }
@@ -54,16 +60,21 @@ public class LinkedList {
 
     public int get(int index) {
         checkIndex(index);
-        return nodeAt(index).value;
+        Node node = nodeAt(index);
+        return node.value;
     }
 
     public boolean contains(int value) {
         Node current = head;
 
         while (current != null) {
+            accesses++;
+            comparisons++;
+
             if (current.value == value) {
                 return true;
             }
+
             current = current.next;
         }
 
@@ -74,11 +85,31 @@ public class LinkedList {
         return size;
     }
 
+    public long getAccesses() {
+        return accesses;
+    }
+
+    public long getComparisons() {
+        return comparisons;
+    }
+
+    public long getMovements() {
+        return movements;
+    }
+
+    public void resetMetrics() {
+        accesses = 0;
+        comparisons = 0;
+        movements = 0;
+    }
+
     private Node nodeAt(int index) {
         Node current = head;
+        accesses++;
 
         for (int i = 0; i < index; i++) {
             current = current.next;
+            accesses++;
         }
 
         return current;
